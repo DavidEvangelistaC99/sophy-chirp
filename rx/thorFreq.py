@@ -1880,10 +1880,10 @@ if __name__ == "__main__":
     
 
 ######################################################################
-########################### OJO IMPORTANTE ###########################
+########################### IMPORTANT NOTE ###########################
 ######################################################################
     
-# Comandos anteriores
+# Recent commands
 # python3 thor.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70.3125e6 -r 20e6 --clock_source external --time_source external --clock_rate 100.0e6 --dc_offset True,True --iq_balance True,True /media/soporte/a9f70b3c-1295-40a4-ae80-96708705fdd0/data 
 # python3 thor.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70.3125e6 -r 20e6 /media/soporte/a9f70b3c-1295-40a4-ae80-96708705fdd0/data    
 # python3 thorNew.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70312500 -r 10000000 /home/idi/data_freq/tx_20_rx_10/fc_0_bw_4
@@ -1891,5 +1891,5 @@ if __name__ == "__main__":
 # python3 thorNew.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70.3125e6 -r 5.0e6 /home/idi/data_freq/pruebas/fc_0/blackman
 # python3 thorNew.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70312500 -r 5000000 /home/idi/data_freq/sin
 
-# Versión para el ejemplo del uso de SIRM
+# Version for the SIRM usage example
 # python3 thorFreq.py -m 192.168.10.5 -d "A:AB" -c ch0 -y "RX" -f 70.3125e6 -r 2.5e6 --clock_source external --time_source external --clock_rate 100.0e6 --dc_offset True,True --iq_balance True,True /home/idi/data_freq/pruebas/fc_0/blackman

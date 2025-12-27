@@ -111,7 +111,8 @@ op2.addParameter(name='nBaud', value=len(code[0]), format='int')
 #################### FREQUENCY-DOMAIN OPERATIONS ######################
 #######################################################################
 
-procUnitConfObjSousySpectra = controllerObj.addProcUnit(datatype='SpectraProc', inputId=procUnitConfObjA.getId())
+procUnitConfObjSousySpectra = controllerObj.addProcUnit(datatype='SpectraProc', 
+                                                        inputId=procUnitConfObjA.getId())
 procUnitConfObjSousySpectra.addParameter(name='nFFTPoints', value='500', format='int')
 procUnitConfObjSousySpectra.addParameter(name='nProfiles', value='500', format='int')
 
@@ -124,7 +125,8 @@ opObj13.addParameter(name='mode', value='2', format='int')
 #######################################################################
 
 # SpectraPlot
-opObj11 = procUnitConfObjSousySpectra.addOperation(name='SpectraPlot', optype='external')
+opObj11 = procUnitConfObjSousySpectra.addOperation(name='SpectraPlot', 
+                                                   optype='external')
 opObj11.addParameter(name='id', value='1', format='int')
 opObj11.addParameter(name='wintitle', value='Spectra NEW', format='str')
 opObj11.addParameter(name='zmin', value=dBmin)

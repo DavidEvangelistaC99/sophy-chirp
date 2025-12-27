@@ -10,8 +10,7 @@
 """Transmit waveforms with synchronized USRPs."""
 from __future__ import absolute_import, division, print_function
 
-############################## New ##########################################
-
+# Import modFreq script
 import modFreq as mdf
 
 import math
@@ -33,6 +32,7 @@ import numpy as np
 import pytz
 from gnuradio import analog, blocks, gr, uhd
 from six.moves import configparser
+
 
 def evalint(s):
     """Evaluate string to an integer."""
@@ -391,12 +391,7 @@ class Tx(object):
         # calculate longdouble precision sample rate
         # (integer division of clock rate)
         #cr = u.get_clock_rate()
-        ##############################
-        # test_alexander valdez linea 384
-        ##############################
-        # u.set_clock_rate(200e6)
         cr=u.get_clock_rate()
-        ##############################
         print ("cr get clock_rate", cr)
         srdec = int(round(cr / samplerate))
         print ("srdec",srdec)
@@ -407,11 +402,6 @@ class Tx(object):
         print ("op.samplerate_frac",sr_rat)
         op.samplerate_num = sr_rat.numerator
         op.samplerate_den = sr_rat.denominator
-        
-        #---------------------------NEW PART---------------
-
-
-        #--------------------------------------------------
 
         # set per-channel options
         # set command time so settings are synced
@@ -663,11 +653,12 @@ class Tx(object):
             file_chirp_B = op.file_chirp_B
             mode_f = op.mode_f
 
-            with open(file_chirp_A,'r') as openfileA: #file_chirp: tiene .json
-                # Reading from json file
+            # Reading from JSON file
+            with open(file_chirp_A,'r') as openfileA:
+                
                 dataA = json.load(openfileA)
 
-            # Parametros del .json para Chirp A
+            # Chirp A Parameters from JSON file
             ampA = dataA['amplitude_1']
             dcA = dataA['dc_1']
             fcA = dataA['fc_1']
@@ -676,15 +667,17 @@ class Tx(object):
             tA = dataA['time_d_1']
             wA = dataA['window_1']
 
-            # Variable anadida para repeticion
+            # Add repetition variable
             nRepA = dataA['repetitions_1']
 
             if file_chirp_B != None:
+
+                # Reading from JSON file
                 with open(file_chirp_B,'r') as openfileB:
-                    # Reading from json file
+                    
                     dataB = json.load(openfileB)
                     
-                    # Parametros del .json para Chirp B
+                    # Chirp B Parameters from JSON file
                     ampB = dataB['amplitude_2']
                     dcB = dataB['dc_2']
                     fcB = dataB['fc_2']
@@ -693,23 +686,60 @@ class Tx(object):
                     tB = dataB['time_d_2']
                     wB = dataB['window_2']
 
-                    # Variable anadida de repeticion
+                    # Add repetition variable
                     nRepB = dataB['repetitions_2']
 
                     if nRepB == 0: 
-                        # Senal Chirp TFM
-                        full_chirp = mdf.chirpModUnion_1(ipp, float(sampr), sampr_x, ampA, ampB, dcA, dcB, fcA, fcB, bwA, bwB, tA, wA, wB)
+                        # TFM Chirp Signal
+                        full_chirp = mdf.chirpModUnion_1(ipp, 
+                                                         float(sampr), 
+                                                         sampr_x, 
+                                                         ampA, 
+                                                         ampB, 
+                                                         dcA, 
+                                                         dcB, 
+                                                         fcA, 
+                                                         fcB, 
+                                                         bwA, 
+                                                         bwB, 
+                                                         tA, 
+                                                         wA, 
+                                                         wB)
                     else:
-                        # Senal Chirp completa AB
-                        full_chirp = mdf.chirpModUnion_2(ipp, float(sampr), sampr_x, ampA, ampB, dcA, dcB, fcA, fcB, bwA, bwB, tA, wA, wB, int(nRepA), int(nRepB))
+                        # Chirp Signal Complete with A and B JSON files
+                        full_chirp = mdf.chirpModUnion_2(ipp, 
+                                                         float(sampr), 
+                                                         sampr_x, 
+                                                         ampA, 
+                                                         ampB, 
+                                                         dcA, 
+                                                         dcB, 
+                                                         fcA, 
+                                                         fcB, 
+                                                         bwA, 
+                                                         bwB, 
+                                                         tA, 
+                                                         wA, 
+                                                         wB, 
+                                                         int(nRepA), 
+                                                         int(nRepB))
                     
             else:
-                # Senal Chirp completa A
-                _, full_chirp = mdf.chirpMod(ampA, ipp, dcA, float(sampr), sampr_x, fcA, bwA, tA, wA, mode_f, phi=0)
-
+                # Chirp Signal Complete A
+                _, full_chirp = mdf.chirpMod(ampA, 
+                                             ipp, 
+                                             dcA, 
+                                             float(sampr), 
+                                             sampr_x, 
+                                             fcA, 
+                                             bwA, 
+                                             tA, 
+                                             wA, 
+                                             mode_f, 
+                                             phi=0)
 
             if op.waveform is not None:
-                # Test para el envio de la union Chirp
+                # Chirp Transmission
                 src_k = blocks.vector_source_c(full_chirp, repeat=True,
                 )
             else:
@@ -1136,7 +1166,7 @@ if __name__ == '__main__':
 
 
 ######################################################################
-########################### OJO IMPORTANTE ###########################
+########################### IMPORTANT NOTE ###########################
 ######################################################################
 
 # Si para generar el codigo usamos 10 Mhz en el comando siguiente utilizar tambien el parametro -r (sample rate) 

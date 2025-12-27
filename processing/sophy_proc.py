@@ -494,7 +494,8 @@ def main(args):
             voltage2 = project.addProcUnit(datatype='VoltageProc', inputId=reader.getId())
 
             op = voltage2.addOperation(name='ProfileSelector')
-            op.addParameter(name='profileRangeList', value='{},{}'.format(conf['usrp_tx']['repetitions_1'], conf['usrp_tx']['repetitions_1']+conf['usrp_tx']['repetitions_2']-1))
+            op.addParameter(name='profileRangeList', 
+                            value='{},{}'.format(conf['usrp_tx']['repetitions_1'], conf['usrp_tx']['repetitions_1']+conf['usrp_tx']['repetitions_2']-1))
 
             if conf['usrp_tx']['code_type_2']:
 

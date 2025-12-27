@@ -1169,10 +1169,10 @@ if __name__ == '__main__':
 ########################### IMPORTANT NOTE ###########################
 ######################################################################
 
-# Si para generar el codigo usamos 10 Mhz en el comando siguiente utilizar tambien el parametro -r (sample rate) 
-# Igual es decir 10 Mhz para que salga equivalente.
+# If we used 10 MHz to generate the code in the following command, also use the -r (sample rate) parameter
+# In other words, 10 MHz should be set to get an equivalent output.
 
-# Version para el ejemplo del uso de SIRM
+# Version for the SIRM usage example
 # python3 txNewLast.py -m 192.168.20.7 -d "A:AB" -y "TX/RX" -f 70.3125e6 -r 20.0e6 -IPP 400.0e-6 -rx 5.0e6 -file_chirp_A /home/idi/anaconda3/envs/sophy3.10/code/json/chirp.json
 # python3 txNewLast.py -m 192.168.20.7 -d "A:AB" -y "TX/RX" -f 70.3125e6 -r 20.0e6 -IPP 400.0e-6 -rx 2.5e6 -file_chirp_A /home/idi/anaconda3/envs/sophy3.10/code/json/chirp_1.json -file_chirp_B /home/idi/anaconda3/envs/sophy3.10/code/json/chirp_2.json
 

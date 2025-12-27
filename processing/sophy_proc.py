@@ -1,4 +1,6 @@
-# SOPHY PROC script
+###---PPI and Polarimetric Variables Processing Script---###
+
+# Import modFreq script
 import modFreq as modf
 
 import os, sys, json, argparse
@@ -7,33 +9,81 @@ import datetime
 import time
 
 PATH = '/home/david/Documents/DATA/'
-#PATH = "/media/jespinoza/data2/SOPHY/"
 
-# SNR ZMIN -40 A ZMAX -20
 PARAM = {
-    # 'S':  {'zmin': -80, 'zmax':-45, 'colormap': 'jet'    , 'label': 'Power', 'wrname': 'power','cb_label': 'dBm', 'ch':0},
-    'S':  {'zmin': -60, 'zmax':-20, 'colormap': 'jet'    , 'label': 'Power', 'wrname': 'power','cb_label': 'dBm', 'ch':0},
-    # 'SNR':{'zmin': -10, 'zmax': 15, 'colormap': 'jet'    , 'label': 'SNR', 'wrname': 'snr','cb_label': 'dB', 'ch':0},
-    'SNR':{'zmin': -10, 'zmax': 40, 'colormap': 'jet'    , 'label': 'SNR', 'wrname': 'snr','cb_label': 'dB', 'ch':0},
-    # Nuevo rango de velocidades del Chirp
-    'V':  {'zmin': -20, 'zmax': 20, 'colormap': 'sophy_v', 'label': 'Velocity', 'wrname': 'velocity', 'cb_label': 'm/s', 'ch':0},
-    'R':  {'zmin': 0.5, 'zmax': 1 , 'colormap': 'sophy_r', 'label': 'RhoHV', 'wrname':'rhoHV', 'cb_label': '',  'ch':0},
-    'P':  {'zmin': -180,'zmax': 180,'colormap': 'sophy_p', 'label': 'PhiDP', 'wrname':'phiDP' , 'cb_label': 'degrees',  'ch':0},
-    'D':  {'zmin': -9 , 'zmax': 12, 'colormap': 'sophy_d', 'label': 'ZDR','wrname':'differential_reflectivity' , 'cb_label': 'dB','ch':0},
-    'Z':  {'zmin': -20, 'zmax': 80, 'colormap': 'sophy_z', 'label': 'Reflectivity ',  'wrname':'reflectivity', 'cb_label': 'dBz','ch':0},
-    # Nuevo rango de Ancho espectral para el Chirp
-    'W':  {'zmin':  0 , 'zmax': 24, 'colormap': 'sophy_w', 'label': 'Spectral Width', 'wrname':'spectral_width', 'cb_label': 'm/s', 'ch':0}
+    'S':  {'zmin': -60, 
+           'zmax':-20, 
+           'colormap': 'jet', 
+           'label': 'Power', 
+           'wrname': 'power',
+           'cb_label': 'dBm', 
+           'ch':0},
+    'SNR':{'zmin': -10, 
+           'zmax': 40, 
+           'colormap': 'jet', 
+           'label': 'SNR', 
+           'wrname': 'snr',
+           'cb_label': 'dB', 
+           'ch':0},
+    # New Chirp velocity range
+    'V':  {'zmin': -20, 
+           'zmax': 20, 
+           'colormap': 'sophy_v', 
+           'label': 'Velocity', 
+           'wrname': 'velocity', 
+           'cb_label': 'm/s', 
+           'ch':0},
+    'R':  {'zmin': 0.5, 
+           'zmax': 1 , 
+           'colormap': 'sophy_r', 
+           'label': 'RhoHV', 
+           'wrname':'rhoHV', 
+           'cb_label': '',  
+           'ch':0},
+    'P':  {'zmin': -180,
+           'zmax': 180,
+           'colormap': 'sophy_p', 
+           'label': 'PhiDP', 
+           'wrname':'phiDP' , 
+           'cb_label': 'degrees',  
+           'ch':0},
+    'D':  {'zmin': -9 , 
+           'zmax': 12, 
+           'colormap': 'sophy_d', 
+           'label': 'ZDR',
+           'wrname':'differential_reflectivity', 
+           'cb_label': 'dB','ch':0},
+    'Z':  {'zmin': -20, 
+           'zmax': 80, 
+           'colormap': 'sophy_z', 
+           'label': 'Reflectivity ',  
+           'wrname':'reflectivity', 
+           'cb_label': 'dBz',
+           'ch':0},
+    # New Chirp spectral width range
+    'W':  {'zmin':  0 ,
+           'zmax': 24, 
+           'colormap': 'sophy_w', 
+           'label': 'Spectral Width', 
+           'wrname':'spectral_width', 
+           'cb_label': 'm/s', 
+           'ch':0}
     }
 
-META = ['heightList', 'data_azi', 'data_ele', 'mode_op', 'latitude', 'longitude', 'altitude', 'heading', 'radar_name',
-    'institution', 'contact', 'h0', 'range_unit', 'prf', 'prf_unit', 'variable', 'variable_unit', 'n_pulses',
-    'pulse1_range', 'pulse1_width', 'pulse2_width', 'pulse1_repetitions', 'pulse2_repetitions', 'pulse_width_unit',
-    'snr_threshold', 'data_noise', 'pulse_type']
+META = ['heightList', 'data_azi', 'data_ele', 'mode_op', 
+        'latitude', 'longitude', 'altitude', 'heading', 
+        'radar_name', 'institution', 'contact', 'h0', 
+        'range_unit', 'prf', 'prf_unit', 'variable', 
+        'variable_unit', 'n_pulses', 'pulse1_range', 
+        'pulse1_width', 'pulse2_width', 'pulse1_repetitions', 
+        'pulse2_repetitions', 'pulse_width_unit',
+        'snr_threshold', 'data_noise', 'pulse_type']
 
 
 def max_index(r, sample_rate, ipp, h0,ipp_km):
 
-    return int(sample_rate*ipp*1e6 * r / ipp_km) + int(sample_rate*ipp*1e6 * -h0 / ipp_km)
+    return (int(sample_rate*ipp*1e6 * r / ipp_km) 
+            + int(sample_rate*ipp*1e6 * -h0 / ipp_km))
 
 def main(args):
 
@@ -42,7 +92,7 @@ def main(args):
     conf = json.loads(fp.read())
 
     ipp_km = conf['usrp_tx']['ipp']
-    bottom = conf['pedestal']['bottom'] # bottom NEW
+    bottom = conf['pedestal']['bottom']
     ipp = ipp_km * 2 /300000
     sample_rate  = conf['usrp_rx']['sample_rate']
     speed_axis = conf['pedestal']['speed']
@@ -64,9 +114,10 @@ def main(args):
     else:
         end_time = '23:59:59'
 
-    N = int(1.0/(abs(speed_axis[0])*ipp))                                               # 1 GRADO DE RESOLUCION
+    # 1 grade of resolution
+    N = int(1.0/(abs(speed_axis[0])*ipp))                                               
     print(N)
-    #path = os.path.join(PATH, experiment, 'rawdata')
+
     path = conf['usrp_rx']['datadir']
     path_ped = os.path.join(PATH, experiment, 'position')
     if args.label:
@@ -76,17 +127,15 @@ def main(args):
     path_plots = os.path.join(PATH, experiment, 'plots{}'.format(label))
     path_save = os.path.join(PATH, experiment, 'param{}'.format(label))
 
-    # SE TIENE QUE CONFIGURAR, IMPORTANTE!!!
+    # IMPORTANT!!!
     if conf['usrp_tx']['code_type_1'] == 'CHIRP':
-        RMIX = 5.45     #2.4 # Para chirp de 12 1: 5.45 #2.4  # 4.8          #5.8  #4.8#5.68#4.8#4.8#2.64#10#2.64
-        H0   = -1.75    #-1.33#-1.68 #.68 #-2.0         #-1.68        #-1.68# -1.2#-1.68#-1.2#0.5#-1.2
+        RMIX = 5.45 
+        H0   = -1.75
     else:
-        RMIX = 4.8  # 4.8          #5.8  #4.8#5.68#4.8#4.8#2.64#10#2.64
-        H0   = -2.0#-1.33#-1.68 #.68 #-2.0         #-1.68        #-1.68# -1.2#-1.68#-1.2#0.5#-1.2
+        RMIX = 4.8  
+        H0   = -2.0
 
     
-    # update pulso corto
-    # pulso cc16 2.0
     MASK = args.mask
 
     from schainpy.controller import Project
@@ -94,21 +143,18 @@ def main(args):
     project = Project()
     project.setup(id='1', name='Sophy', description='sophy proc')
 
-    # start_time = '20:10:00'
-    # end_time = '20:30:00'
-
     reader = project.addReadUnit(datatype='DigitalRFReader',
-        path=path,
-        startDate=start_date,
-        endDate=end_date,
-        startTime=start_time,
-        endTime=end_time,
-        delay=30,
-        # online=args.online,
-        walk=1,
-        ippKm = ipp_km,
-        getByBlock = 1,
-        nProfileBlocks = N,
+                                 path=path,
+                                 startDate=start_date,
+                                 endDate=end_date,
+                                 startTime=start_time,
+                                 endTime=end_time,
+                                 delay=30,
+                                 # online=args.online,
+                                 walk=1,
+                                 ippKm = ipp_km,
+                                 getByBlock = 1,
+                                 nProfileBlocks = N,
     )
 
     if not conf['usrp_tx']['enable_2']: # One Pulse
@@ -117,7 +163,11 @@ def main(args):
 
         if conf['usrp_tx']['code_type_1'] == 'CHIRP':
             print("CHIRP PULSE")
-            pulse_1_width = int((2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8)*conf['usrp_tx']['dc_1']*1.0e-2)*1.0e6)
+            pulse_1_width = int(
+                                (2 * (conf['usrp_tx']['ipp'] * 1.0e3)
+                                / (3 * 1.0e8)
+                                * conf['usrp_tx']['dc_1'] * 1.0e-2)
+                                * 1.0e6)
             pulse_1_repetitions = N
         else:
             print("CODE PULSE")
@@ -127,24 +177,35 @@ def main(args):
         pulse_2_width = 0
         pulse_2_repetitions = 0
 
-        voltage = project.addProcUnit(datatype='VoltageProc', inputId=reader.getId())
+        voltage = project.addProcUnit(datatype='VoltageProc', 
+                                      inputId=reader.getId())
 
         if conf['usrp_tx']['code_type_1'] != 'None':
 
             if conf['usrp_tx']['code_type_1'] == 'CHIRP':
 
-                #-------------------CODIGO CHIRP ---------------------------
+                #-------------------LARGE CHIRP CODE----------------------
                 # Parameters
                 A1 = conf['usrp_tx']['amplitude_1']
                 ipp1 = 2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8)
-                dc1 = conf['usrp_tx']['dc_1']     # Consideramos el SR RX
+                dc1 = conf['usrp_tx']['dc_1']     
+                # Consider SR RX
                 sr_rx1 = conf['usrp_tx']['sampleraterx']*1.0e6 
                 fc1 = conf['usrp_tx']['fc_1'] 
                 bw1 = conf['usrp_tx']['bw_1']*1.0e6 
                 t_d1 = conf['usrp_tx']['time_d_1']
                 window1 = conf['usrp_tx']['window_1']
 
-                chirp_tx_1, _ = modf.chirpMod(A1, ipp1, dc1, sr_rx1, sr_rx1, fc1, bw1, t_d = 0, window = window1, mode_f = 0)
+                chirp_tx_1, _ = modf.chirpMod(A1, 
+                                              ipp1, 
+                                              dc1, 
+                                              sr_rx1, 
+                                              sr_rx1, 
+                                              fc1, 
+                                              bw1, 
+                                              t_d = 0, 
+                                              window = window1, 
+                                              mode_f = 0)
 
                 code1_ = chirp_tx_1
                 code = [code1_]
@@ -161,13 +222,15 @@ def main(args):
             op.addParameter(name='code', value=code)
             op.addParameter(name='nCode', value=len(code), format='int')
             op.addParameter(name='nBaud', value=len(code[0]), format='int')
-            #cambio de modo de operacion Decoder
-            #op.addParameter(name='mode', value=0, format='int')
 
+            # Change of Decoder operation mode
+            # op.addParameter(name='mode', value=0, format='int')
 
-            op = voltage.addOperation(name='CohInt', optype='other') #Minimo integrar 2 perfiles por ser codigo complementario
+            # A minimum of two profiles must be integrated 
+            # due to the use of complementary codes
+            op = voltage.addOperation(name='CohInt', optype='other') 
             op.addParameter(name='n', value=len(code), format='int')
-            ncode = len(code) # revisar nro code
+            ncode = len(code)
         else:
             ncode = 1
             code = ['0']
@@ -178,7 +241,9 @@ def main(args):
         if args.range > 0:
             op = voltage.addOperation(name='selectHeights')
             op.addParameter(name='minIndex', value='0', format='int')
-            op.addParameter(name='maxIndex', value=max_index(args.range, sample_rate, ipp, H0,ipp_km), format='int')
+            op.addParameter(name='maxIndex', 
+                            value=max_index(args.range, sample_rate, ipp, H0,ipp_km), 
+                            format='int')
 
         op = voltage.addOperation(name='PulsePair_vRF', optype='other')
         op.addParameter(name='n', value=int(N)/ncode, format='int')
@@ -215,8 +280,7 @@ def main(args):
             op.addParameter(name='channels', value='0,')
             op.addParameter(name='zmin', value=PARAM[param]['zmin'])
             op.addParameter(name='zmax', value=PARAM[param]['zmax'])
-            op.addParameter(name='yrange', value=0.15, format='float')# esto estaba en 20
-            # op.addParameter(name='xrange', value=10, format='float')
+            op.addParameter(name='yrange', value=0.15, format='float')
             op.addParameter(name='xrange', value=args.range, format='float')
             op.addParameter(name='attr_data', value=param, format='str')
             op.addParameter(name='labels', value=[PARAM[param]['label'], PARAM[param]['label']])
@@ -294,8 +358,21 @@ def main(args):
 
         if conf['usrp_tx']['code_type_1'] == 'CHIRP':
             print("CHIRP PULSE")
-            pulse_1_width = int((2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8)*conf['usrp_tx']['dc_1']*1.0e-2)*1.0e6)
-            pulse_2_width = int((2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8)*conf['usrp_tx']['dc_2']*1.0e-2)*1.0e6)
+
+            pulse_1_width = int(
+                (2 * (conf['usrp_tx']['ipp'] * 1.0e3)
+                / (3 * 1.0e8)
+                * conf['usrp_tx']['dc_1'] * 1.0e-2)
+                * 1.0e6
+            )
+
+            pulse_2_width = int(
+                (2 * (conf['usrp_tx']['ipp'] * 1.0e3)
+                / (3 * 1.0e8)
+                * conf['usrp_tx']['dc_2'] * 1.0e-2)
+                * 1.0e6
+            )
+
         else:
             print("CODE PULSE")
             pulse_1_width = conf['usrp_tx']['pulse_1']
@@ -306,27 +383,39 @@ def main(args):
 
 
         if '1' in args.pulses:
-            voltage1 = project.addProcUnit(datatype='VoltageProc', inputId=reader.getId())
+            voltage1 = project.addProcUnit(datatype='VoltageProc', 
+                                           inputId=reader.getId())
 
             op = voltage1.addOperation(name='ProfileSelector')
-            op.addParameter(name='profileRangeList', value='0,{}'.format(conf['usrp_tx']['repetitions_1']-1))
+            op.addParameter(name='profileRangeList', 
+                            value='0,{}'.format(conf['usrp_tx']['repetitions_1']-1))
 
             if conf['usrp_tx']['code_type_1'] != 'None':
 
                 if conf['usrp_tx']['code_type_1'] == 'CHIRP':
 
-                    #-------------------CODIGO CHIRP PEQUENO---------------------------
+                    #-------------------SHORT CHIRP CODE---------------------------
                     # Parameters
                     A1 = conf['usrp_tx']['amplitude_1']
                     ipp1 = 2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8) 
-                    dc1 = conf['usrp_tx']['dc_1']     # Consideramos el SR RX
+                    dc1 = conf['usrp_tx']['dc_1']     
+                    # Consider SR RX
                     sr_rx1 = conf['usrp_tx']['sampleraterx']*1.0e6 
                     fc1 = conf['usrp_tx']['fc_1'] 
                     bw1 = conf['usrp_tx']['bw_1']*1.0e6 
                     t_d1 = conf['usrp_tx']['time_d_1']
                     window1 = conf['usrp_tx']['window_1']
 
-                    chirp_tx_1, _ = modf.chirpMod(A1, ipp1, dc1, sr_rx1, sr_rx1, fc1, bw1, t_d = 0, window = window1, mode_f = 0)
+                    chirp_tx_1, _ = modf.chirpMod(A1, 
+                                                  ipp1, 
+                                                  dc1, 
+                                                  sr_rx1, 
+                                                  sr_rx1, 
+                                                  fc1, 
+                                                  bw1, 
+                                                  t_d = 0, 
+                                                  window = window1, 
+                                                  mode_f = 0)
 
                     code1_ = chirp_tx_1
                     code = [code1_]
@@ -338,20 +427,21 @@ def main(args):
                         code.append([int(x) for x in c])
 
 
-                ncode = len(code) # revisar nro code
+                ncode = len(code)
                 #----------------------------------------------------------
                 op = voltage1.addOperation(name='Decoder', optype='other')
                 op.addParameter(name='code', value=code)
                 op.addParameter(name='nCode', value=len(code), format='int')
                 op.addParameter(name='nBaud', value=len(code[0]), format='int')
-                #cambio de modo de operacion Decoder
+                # Change decoder operation mode
                 #op.addParameter(name='mode', value=2, format='int')
                 ncode = len(code)
             else:
                 ncode = 1
                 code = ['0']
 
-            op = voltage1.addOperation(name='CohInt', optype='other') #Minimo integrar 2 perfiles por ser codigo complementario
+            # Minimum of 2 profiles must be integrated because it is a complementary code
+            op = voltage1.addOperation(name='CohInt', optype='other') 
             op.addParameter(name='n', value=ncode, format='int')
 
             op = voltage1.addOperation(name='setH0')
@@ -359,8 +449,12 @@ def main(args):
 
             if args.range > 0:
                 op = voltage1.addOperation(name='selectHeights')
-                op.addParameter(name='minIndex', value=max_index(0, sample_rate, ipp, H0,ipp_km), format='int')
-                op.addParameter(name='maxIndex', value=max_index(args.range, sample_rate, ipp, H0,ipp_km), format='int')
+                op.addParameter(name='minIndex', 
+                                value=max_index(0, sample_rate, ipp, H0,ipp_km), 
+                                format='int')
+                op.addParameter(name='maxIndex', 
+                                value=max_index(args.range, sample_rate, ipp, H0,ipp_km), 
+                                format='int')
 
 
 
@@ -393,7 +487,6 @@ def main(args):
             op.addParameter(name='attr_data', value='data_param')
             op.addParameter(name='runNextOp', value=True)
             op.addParameter(name='angles', value=angles)
-            #op.addParameter(name='horario',value=False)
             op.addParameter(name='heading', value=conf['heading'])
 
 
@@ -407,11 +500,12 @@ def main(args):
 
                 if conf['usrp_tx']['code_type_2'] == 'CHIRP':
 
-                    #-------------------CODIGO CHIRP GRANDE---------------------------
+                    #-------------------LARGE CHIRP CODE--------------------------
                     # Parameters
                     A2 = conf['usrp_tx']['amplitude_2']
                     ipp2 = 2*(conf['usrp_tx']['ipp']*1.0e3)/(3*1.0e8) 
-                    dc2 = conf['usrp_tx']['dc_2']     # Consideramos el SR RX
+                    dc2 = conf['usrp_tx']['dc_2']     
+                    # Consider SR RX
                     sr_rx2 = conf['usrp_tx']['sampleraterx']*1.0e6 
                     fc2 = conf['usrp_tx']['fc_2'] 
                     bw2 = conf['usrp_tx']['bw_2']*1.0e6 
@@ -429,16 +523,17 @@ def main(args):
                     for c in codes:
                         code.append([int(x) for x in c])
 
-                ncode = 1 # revisar nro code
+                ncode = 1
                 #----------------------------------------------------------
                 op = voltage2.addOperation(name='Decoder', optype='other')
                 op.addParameter(name='code', value=code)
                 op.addParameter(name='nCode', value=len(code), format='int')
                 op.addParameter(name='nBaud', value=len(code[0]), format='int')
-                #cambio de modo de operacion Decoder
+                # Change decoder operation mode
                 #op.addParameter(name='mode', value=2, format='int')
 
-                op = voltage2.addOperation(name='CohInt', optype='other') #Minimo integrar 2 perfiles por ser codigo complementario
+                # Minimum of 2 profiles must be integrated because it is a complementary code
+                op = voltage2.addOperation(name='CohInt', optype='other')
                 op.addParameter(name='n', value=len(code), format='int')
 
                 ncode = len(code)
@@ -450,8 +545,12 @@ def main(args):
 
             if args.range > 0:
                 op = voltage2.addOperation(name='selectHeights')
-                op.addParameter(name='minIndex', value=max_index(0, sample_rate, ipp, H0,ipp_km), format='int')
-                op.addParameter(name='maxIndex', value=max_index(args.range, sample_rate, ipp, H0,ipp_km), format='int')
+                op.addParameter(name='minIndex', 
+                                value=max_index(0, sample_rate, ipp, H0,ipp_km), 
+                                format='int')
+                op.addParameter(name='maxIndex', 
+                                value=max_index(args.range, sample_rate, ipp, H0,ipp_km), 
+                                format='int')
 
 
             op = voltage2.addOperation(name='PulsePair_vRF', optype='other')
@@ -627,30 +726,36 @@ if __name__ == '__main__':
     project = main(args)
     project.start()
 
-#python sophy_A.py HYO_CC4_CC64_COMB@2022-12-27T00-00-32 --parameters Z  --plot --save --show --rmDC --label Z_04 --range 60 --start_time "22:00:00"
-# colocar siempre el range que asume 0 y no hace la seleccion de alturas
-#python sophy_proc.py PIU@2023-12-19T14-15-16 --parameters Z  --plot --save --rmDC --label magic10 --range 10 --start_time 14:28:00
-#python sophy_proc.py PIU@2024-01-11T23-18-32  --parameters Z  --plot --save --rmDC --label magic10 --range 75
-#python sophy_proc.py TEST_PN_RHI@2024-10-15T22-26-48  --parameters Z  --plot --save --rmDC --label range5_1useg_rhi --range 5
-#python sophy_proc_hyo_dic.py HYO@2025-08-04T19-01-06  --parameters Z  --plot --save --rmDC --label 2CH_04AGOSTO_1409 --range 60
+######################################################################
+########################### IMPORTANT NOTE ###########################
+######################################################################
 
-""""
-PRUEBA
+# python sophy_A.py HYO_CC4_CC64_COMB@2022-12-27T00-00-32 --parameters Z  --plot --save --show --rmDC --label Z_04 --range 60 --start_time "22:00:00"
+# Always specify the range parameter; otherwise, it defaults to 0 and no height selection is performed
+# python sophy_proc.py PIU@2023-12-19T14-15-16 --parameters Z  --plot --save --rmDC --label magic10 --range 10 --start_time 14:28:00
+# python sophy_proc.py PIU@2024-01-11T23-18-32  --parameters Z  --plot --save --rmDC --label magic10 --range 75
+# python sophy_proc.py TEST_PN_RHI@2024-10-15T22-26-48  --parameters Z  --plot --save --rmDC --label range5_1useg_rhi --range 5
+# python sophy_proc_hyo_dic.py HYO@2025-08-04T19-01-06  --parameters Z  --plot --save --rmDC --label 2CH_04AGOSTO_1409 --range 60
+
+"""
+TEST
 DRONE TEST_PN_RHI@2024-10-29T17-12-50
-sr Rx 2.5 Mhz
-En este experimento se observa que la h0 = -1.68
-PRUEBA
+Rx sampling rate: 2.5 MHz
+In this experiment, h0 is observed to be -1.68
+
+TEST
 DRONE TEST_PN_RHI@2024-10-29T17-12-50
-sr Rx 10 Mhz
-En este experimento se observa que la h0 = -1.2
-PRUEBA
+Rx sampling rate: 10 MHz
+In this experiment, h0 is observed to be -1.2
+
+TEST
 DRONE TEST_PN_RHI@2024-10-30T16-32-30
-sr Rx 10 Mhz
-En este experimento se observa que la h0 = -1.2
-DRONE TEST_PN_RHI@2024-10-30T20-33-34
-sr Rx 5 Mhz
-En este experimento se observa que la h0 = -1.4
+Rx sampling rate: 10 MHz
+In this experiment, h0 is observed to be -1.2
 
+DRONE TEST_PN_RHI@2024-10-30T20-33-34
+Rx sampling rate: 5 MHz
+In this experiment, h0 is observed to be -1.4
 """
 
 # Example

@@ -52,7 +52,7 @@ used complementary code waveforms.
 </p>
 
 <p align="center">
-  <em>Reflectivity at a 4.2° elevation angle using chirp-based pulse compression.</>
+  <em>Reflectivity at a 4.2° elevation angle using chirp-based pulse compression.</em>
 </p>
 
 ## Repository Structure

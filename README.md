@@ -47,6 +47,14 @@ used complementary code waveforms.
 - Extension of the detectable radial velocity range up to ±20 m/s
 - Improved resolution with a PSLR of −30.7 dB, obtained from spectral analysis of the transmitted chirp waveform, providing an upper-bound estimate of pulse compression performance
 
+<p align="center">
+  <img src="results/gifs/Z_EL_4.2" width="900">
+</p>
+
+<p align="center">
+  <em>Reflectivity at a 4.2° elevation angle using chirp-based pulse compression.</>
+</p>
+
 ## Repository Structure
 - `tx/`: Waveform generation and transmission scripts using a USRP platform  
   (adapted from MIT Haystack DigitalRF; includes chirp waveform generation)

@@ -48,7 +48,7 @@ used complementary code waveforms.
 - Improved resolution with a PSLR of −30.7 dB, obtained from spectral analysis of the transmitted chirp waveform, providing an upper-bound estimate of pulse compression performance
 
 <p align="center">
-  <img src="results/gifs/Z_EL_4.2" width="900">
+  <img src="results/gifs/Z_EL_4.2.gif" width="900">
 </p>
 
 <p align="center">

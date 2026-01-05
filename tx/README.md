@@ -11,7 +11,7 @@ It includes:
 
 - `modFreq.py`: script for generating the chirp waveform used in the radar
   experiments. This script defines the modulation parameters and produces
-  the frequency-modulated signal transmitted by the radar.
+  the frequency-modulated signal transmitted by the radar
 
 - `tx.py`: USRP-based transmission script that loads the generated waveform
-  and handles the transmission configuration.
+  and handles the transmission configuration

@@ -1,7 +1,7 @@
 # Pulse Compression of Chirp Signals for Weather Radar SOPHy
 
 <p align="center">
-  <img src="images/sophy.jpg" width="900">
+  <img src="images/SOPHY.jpg" width="900">
 </p>
 
 <p align="center">

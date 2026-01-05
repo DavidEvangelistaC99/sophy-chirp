@@ -16,8 +16,7 @@ pulse compression techniques to improve signal-to-noise ratio in
 meteorological radar systems.
 
 The implemented framework integrates USRP-based transmission and reception
-(adapted from MIT Haystack’s DigitalRF tools) with post-processing algorithms
-based on the ROJ Signal Chain library, and is validated using real radar
+(adapted from MIT Haystack’s DigitalRF tools) with post-processing algorithms (based on the ROJ Signal Chain library), and is validated using real radar
 data from the SOPHy weather radar.
 
 ## Scientific Context
@@ -31,11 +30,11 @@ processing gain when combined with matched filtering and Doppler processing.
 - USRP-based transmission and reception
 - Matched filtering and pulse compression
 - Doppler spectrum analysis
-- SNR estimation over azimuth angles
 - Pulse Pair processing for radar moment estimation
 - Validation using real data from the SOPHy weather radar
 - Generation of PPI products including reflectivity, radial velocity,
   spectral width, and polarimetric variables
+- SNR estimation over azimut angles
 
 ## Results
 The results presented in this section correspond to a comparative evaluation

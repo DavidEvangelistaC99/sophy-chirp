@@ -11,11 +11,9 @@
 ## Overview
 This repository contains waveform generation, data acquisition, and signal
 processing algorithms developed during my undergraduate thesis at the
-Radio Observatory of Jicamarca (ROJ). The work focuses on chirp-based
-pulse compression techniques to improve signal-to-noise ratio in
-meteorological radar systems.
-
-The implemented framework integrates USRP-based transmission and reception
+Radio Observatory of Jicamarca (ROJ).<br><br> 
+The work focuses on chirp-based pulse compression techniques to improve signal-to-noise ratio in
+meteorological radar systems. The implemented framework integrates USRP-based transmission and reception
 (adapted from MIT Haystack’s DigitalRF tools) with post-processing algorithms (based on the ROJ Signal Chain library), and is validated using real radar
 data from the SOPHy weather radar.
 

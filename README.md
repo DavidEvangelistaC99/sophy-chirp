@@ -1,4 +1,4 @@
-# Pulse Compression of Chirp Signals for Weather Radar SOPHy
+# Chirp Pulse Compression for Weather Radar SOPHy
 
 <p align="center">
   <img src="images/SOPHY.jpg" width="900">

@@ -53,12 +53,10 @@ used complementary code waveforms.
 </p>
 
 ## Repository Structure
-- `tx/`: waveform generation and transmission scripts using a USRP platform  
-  (adapted from MIT Haystack DigitalRF; includes chirp waveform generation)
-- `rx/`: USRP-based data acquisition scripts adapted from DigitalRF, storing
+- `tx/`: waveform generation and transmission scripts using a USRP platform
+- `rx/`: USRP-based data acquisition scripts, storing
   received data in HDF5 format
-- `processing/`: signal processing scripts based on the ROJ Signal Chain library,
-  including Doppler spectrum estimation and PPI generation using Pulse Pair
+- `processing/`: signal processing scripts, including Doppler spectrum estimation and PPI generation using Pulse Pair
 - `results/`: PPI plots, Doppler spectra, and animated radar products
 - `schain/`: signal processing library developed by the ROJ
 - `legacy/`: early exploratory scripts and development drafts

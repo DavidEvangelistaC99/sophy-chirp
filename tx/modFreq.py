@@ -203,16 +203,16 @@ if __name__ == "__main__":
   
   A = 1.0
   ipp = 400.0e-6
-  dc = 12.0
+  dc = 1.0
   sr_tx = 20.0e6
   sr_rx = 2.5e6
   # The central frequency will define the Chirp sweep (ascending or descending)
   fc = 0.0e6
   bw = 1.0e6
-  td_ = 5.2
+  td_ = 0.0 # 5.2 us
   window_ = 'B'
-  mode_f_ = 0
-  phi_ = 0
+  mode_f_ = 0.0
+  phi_ = 0.0
   rep_ = 250.0
 
   chirp, full_chirp = chirpMod(A, 
@@ -227,13 +227,27 @@ if __name__ == "__main__":
                                mode_f = mode_f_, 
                                phi = phi_)
 
+  t = [i*(dc*ipp*1.0e6/100.0)/(len(chirp)) for i in range(len(chirp))] 
+
+  np.savetxt("chirp_signal.txt",
+              np.column_stack((t, np.real(chirp), np.imag(chirp))),
+              header="time_us real imag")
+
   # chirpModUnion_1(ipp, sr_tx, sr_rx, A_1, A_2, dc_1, dc_2, fc_1, fc_2, bw_1, bw_2, t_d_, window_1, window_2)
   # full_chirp_1 = chirpModUnion_1(ipp, sr_tx, sr_rx, A, A, 12.0, 12.0, 0.0e6, 2.0e6, 1.0e6, 0.0e6, td_, 'B', 'R')
   
   # chirpModUnion_2(ipp, sr_tx, sr_rx, A_1, A_2, dc_1, dc_2, fc_1, fc_2, bw_1, bw_2, t_d_, window_1, window_2, rep_1, rep_2)
   # full_chirp_2 = chirpModUnion_2(ipp, sr_rx, sr_rx, A, A/2.0, dc, 1.0, fc, fc, bw, bw, td_, window_, 'R', rep_, rep_)
   
-  t = [i for i in range(len(chirp))] 
-  plt.plot(t, np.real(chirp)) 
-  plt.plot(t, np.imag(chirp)) 
+  plt.plot(t, np.real(chirp), label="Real") 
+  plt.plot(t, np.imag(chirp), label="Imag") 
+  plt.grid(
+            True,
+            linestyle='--',   # líneas punteadas
+            linewidth=0.5,    # más delgadas
+            alpha=0.7         # un poco transparentes
+            )
+  plt.legend()
+  plt.xlabel("Time (us)", fontweight='bold')
+  plt.ylabel("Amplitude ", fontweight='bold')
   plt.show()
